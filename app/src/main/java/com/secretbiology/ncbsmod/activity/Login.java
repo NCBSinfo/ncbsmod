@@ -2,14 +2,17 @@ package com.secretbiology.ncbsmod.activity;
 
 //Disclaimer : few of code from this file has been adapted from Google's original examples of sign in APIs
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -26,10 +29,18 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.rohitsuratekar.retro.google.fusiontable.Commands;
+import com.rohitsuratekar.retro.google.fusiontable.Service;
+import com.rohitsuratekar.retro.google.fusiontable.reponse.SpecificRowValue;
 import com.secretbiology.ncbsmod.R;
+import com.secretbiology.ncbsmod.constants.Network;
 import com.secretbiology.ncbsmod.helpers.GeneralFunctions;
 
 import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -37,12 +48,12 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public static final int RC_SIGN_IN = 9001;
     public static final int AUTH_CODE_REQUEST_CODE = 2000;
     public static final String SCOPES = "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/fusiontables";
+    public static final String EMAIL = "currentEmail";
 
     //Private constants
     private static String TAG = Login.class.getSimpleName();
 
     //Variables
-    Bundle bundle;
     GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
     private String currentEmail;
@@ -51,7 +62,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        bundle = savedInstanceState;
 
         //Sign In options
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -130,13 +140,16 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             GoogleSignInAccount acct = result.getSignInAccount();
             if (acct != null) {
                 currentEmail = acct.getEmail();
+                PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().putString(EMAIL,currentEmail).apply();
                 showProgressDialog();
                 getToken(currentEmail);
             }
 
         } else {
             Toast.makeText(getBaseContext(), "Unauthorized Access, Please log in", Toast.LENGTH_LONG).show();
-            Log.e(TAG, "UNAUTHORIZED");
+            if(result.getStatus().getStatusCode()==12501){
+                Log.e(TAG, "Bad configuration");
+            }
         }
     }
 
@@ -172,7 +185,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 String token = null;
 
                 try {
-                    token = GoogleAuthUtil.getToken(getApplicationContext(), email, "oauth2:" + SCOPES, bundle);
+                    token = GoogleAuthUtil.getToken(getApplicationContext(), email, "oauth2:" + SCOPES);
                 } catch (UserRecoverableAuthException e) {
                     // Requesting an authorization code will always throw
                     // UserRecoverableAuthException on the first call to GoogleAuthUtil.getToken
@@ -192,11 +205,89 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             @Override
             protected void onPostExecute(String token) {
                 Log.i(TAG, "Access token retrieved:" + token);
-                //getRowsByValue(ConstantsNetwork.MOD_TABLEID, token, "Email", email, getBaseContext());
+                getRowsByValue(Network.MODTABLE, token, "Email", email, getBaseContext());
             }
 
         };
         task.execute();
+    }
+
+    public void getRowsByValue(String TableID, String AccessToken, String Column, String Rowvalue, final Context context) {
+        String sql_query = "SELECT * FROM " + TableID + " WHERE " + Column + "='" + Rowvalue + "'";
+        Commands fusionService = Service.createService(Commands.class, AccessToken);
+        Call<SpecificRowValue> call2 = fusionService.getSpecificRow(sql_query, AccessToken);
+
+        call2.enqueue(new Callback<SpecificRowValue>() {
+            @Override
+            public void onResponse(Call<SpecificRowValue> call, Response<SpecificRowValue> response) {
+                if (response.isSuccess()) {
+
+                    if (response.body().getRows().size() == 0) {
+                        hideProgressDialog();
+
+                        final AlertDialog alertDialog = new AlertDialog.Builder(
+                                Login.this).create();
+
+                        // Setting Dialog Title
+                        alertDialog.setTitle("Something is wrong");
+
+                        // Setting Dialog Message
+                        alertDialog.setMessage("Your access to moderator's zone has been revoked! Please contact developers.");
+
+                        // Setting OK Button
+                        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Write your code here to execute after dialog closed
+                                hideProgressDialog();
+
+                            }
+                        });
+
+                        // Showing Alert Message
+                        alertDialog.show();
+
+                    } else {
+                            Toast.makeText(context, "Successfully Loaded preferences", Toast.LENGTH_LONG);
+                            hideProgressDialog();
+
+                    }
+
+
+                } else {
+                    Toast.makeText(context, "Failed to get database.", Toast.LENGTH_LONG).show();
+                    hideProgressDialog();
+                    if (response.code() == 403) {
+                        hideProgressDialog();
+                        Log.i(TAG, "Not permitted");
+                        final AlertDialog alertDialog = new AlertDialog.Builder(
+                                Login.this).create();
+
+                        // Setting Dialog Title
+                        alertDialog.setTitle("Oops");
+
+                        // Setting Dialog Message
+                        alertDialog.setMessage("You don't have access to moderator's zone!");
+
+                        // Setting OK Button
+                        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Write your code here to execute after dialog closed
+
+
+                            }
+                        });
+
+                        // Showing Alert Message
+                        alertDialog.show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SpecificRowValue> call, Throwable t) {
+                Toast.makeText(context, "Error:" + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }
