@@ -32,6 +32,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.rohitsuratekar.retro.google.fusiontable.Commands;
 import com.rohitsuratekar.retro.google.fusiontable.Service;
 import com.rohitsuratekar.retro.google.fusiontable.reponse.SpecificRowValue;
+import com.secretbiology.ncbsmod.LoadData;
 import com.secretbiology.ncbsmod.R;
 import com.secretbiology.ncbsmod.constants.Network;
 import com.secretbiology.ncbsmod.helpers.GeneralFunctions;
@@ -228,16 +229,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         final AlertDialog alertDialog = new AlertDialog.Builder(
                                 Login.this).create();
 
-                        // Setting Dialog Title
                         alertDialog.setTitle("Something is wrong");
-
-                        // Setting Dialog Message
                         alertDialog.setMessage("Your access to moderator's zone has been revoked! Please contact developers.");
-
-                        // Setting OK Button
                         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog closed
+                                //TODO: Write your code here to execute after dialog closed
                                 hideProgressDialog();
 
                             }
@@ -248,7 +244,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                     } else {
                             Toast.makeText(context, "Successfully Loaded preferences", Toast.LENGTH_LONG);
+                            startActivity(new Intent(Login.this, LoadData.class));
                             hideProgressDialog();
+
 
                     }
 
@@ -264,14 +262,10 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
                         // Setting Dialog Title
                         alertDialog.setTitle("Oops");
-
-                        // Setting Dialog Message
                         alertDialog.setMessage("You don't have access to moderator's zone!");
-
-                        // Setting OK Button
                         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog closed
+                           //TODO: Write your code here to execute after dialog closed
 
 
                             }
