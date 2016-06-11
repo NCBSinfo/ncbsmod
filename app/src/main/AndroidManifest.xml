@@ -22,7 +22,9 @@
         <activity android:name=".activity.Login" />
         <activity android:name=".LoadData" />
         <activity android:name=".activity.UserList" />
-        <activity android:name=".activity.UserWindow"></activity>
+        <activity android:name=".activity.UserWindow" />
+        <activity android:name=".activity.ModeratorZone" />
+        <activity android:name=".activity.TopicWindow"></activity>
     </application>
 
 </manifest>

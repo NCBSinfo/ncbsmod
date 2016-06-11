@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -30,8 +31,13 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.secretbiology.ncbsmod.activity.UserList;
 import com.secretbiology.ncbsmod.constants.Network;
+import com.secretbiology.ncbsmod.constants.Preferences;
+import com.secretbiology.ncbsmod.database.Database;
 import com.secretbiology.ncbsmod.database.ExternalData;
+import com.secretbiology.ncbsmod.helpers.Converters;
+import com.secretbiology.ncbsmod.helpers.GeneralFunctions;
 import com.secretbiology.ncbsmod.models.ExternalDataModel;
 import com.secretbiology.ncbsmod.models.UserDataModel;
 
@@ -76,7 +82,7 @@ public class LoadData extends AppCompatActivity implements EasyPermissions.Permi
          * of the preconditions are not satisfied, the app will prompt the user as
          * appropriate.
          */
-        private void getResultsFromApi() {
+        public void getResultsFromApi() {
             if (! isGooglePlayServicesAvailable()) {
                 acquireGooglePlayServices();
             } else if (mCredential.getSelectedAccountName() == null) {
@@ -317,9 +323,20 @@ public class LoadData extends AppCompatActivity implements EasyPermissions.Permi
                         entry.setExternalCode(row.get(4).toString());
 
                         if(!new ExternalData(getBaseContext()).isAlreadyThere(entry.getTimestamp())){
-                            new ExternalData(getBaseContext()).add(entry);
+
+                            if(new Database(getBaseContext()).isAlreadyThere(ExternalData.TABLE_NAME,ExternalData.EMAIL,entry.getEmail())) {
+
+                                new ExternalData(getBaseContext()).delete(new ExternalData(getBaseContext()).getbyField(ExternalData.EMAIL,entry.getEmail()));
+                                new ExternalData(getBaseContext()).add(entry);
+                            }
+                            else {
+                                new ExternalData(getBaseContext()).add(entry);
+                            }
                         }
                     }
+
+                     PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().putString(Preferences.LAST_FETCHED, new GeneralFunctions().timeStamp()).apply();
+
                 }
                 return results;
             }
@@ -337,8 +354,7 @@ public class LoadData extends AppCompatActivity implements EasyPermissions.Permi
                 if (output == null || output.size() == 0) {
                     Log.i("Tag","No results returned.");
                 } else {
-                    output.add(0, "Data retrieved using the Google Sheets API:");
-                    Log.i("Tag",TextUtils.join("\n", output));
+                   startActivity(new Intent(LoadData.this, UserList.class));
                 }
             }
 

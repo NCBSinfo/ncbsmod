@@ -13,12 +13,12 @@ import java.util.List;
 public class UserData {
 
     //Get Constants
-    static String TABLE_NAME = "UserDataTable";
-    static String ID = "usrdata_id";
-    static String TIMESTAMP = "usrdata_timestamp";
-    static String USERID = "usrdata_userid";
-    static String MESSAGE = "usrdata_message";
-    static String EXTRA_VARIABLES = "usrdata_variables";
+    public static String TABLE_NAME = "UserDataTable";
+    public static String ID = "usrdata_id";
+    public static String TIMESTAMP = "usrdata_timestamp";
+    public static String USERID = "usrdata_userid";
+    public static String MESSAGE = "usrdata_message";
+    public static String EXTRA_VARIABLES = "usrdata_variables";
 
 
     SQLiteDatabase db;

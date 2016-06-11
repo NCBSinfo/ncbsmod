@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,6 +33,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.rohitsuratekar.retro.google.fusiontable.Commands;
 import com.rohitsuratekar.retro.google.fusiontable.Service;
 import com.rohitsuratekar.retro.google.fusiontable.reponse.SpecificRowValue;
+import com.secretbiology.ncbsmod.Home;
 import com.secretbiology.ncbsmod.LoadData;
 import com.secretbiology.ncbsmod.R;
 import com.secretbiology.ncbsmod.constants.Network;
@@ -50,9 +52,15 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public static final int AUTH_CODE_REQUEST_CODE = 2000;
     public static final String SCOPES = "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/fusiontables";
     public static final String EMAIL = "currentEmail";
+    public static final String NAME = "currentName";
+    public static final String KEY = "currentKey";
+    public static final String LOGTABLE = "logTable";
+    public static final String EXTRA_CODE = "currentExtraCodes";
+    public static final String ACCESS_LEVEL = "currentAccessLevel";
 
     //Private constants
     private static String TAG = Login.class.getSimpleName();
+    private SharedPreferences pref;
 
     //Variables
     GoogleApiClient mGoogleApiClient;
@@ -63,7 +71,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-
+        pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //Sign In options
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -141,7 +149,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             GoogleSignInAccount acct = result.getSignInAccount();
             if (acct != null) {
                 currentEmail = acct.getEmail();
-                PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().putString(EMAIL,currentEmail).apply();
+                pref.edit().putString(EMAIL,currentEmail).apply();
                 showProgressDialog();
                 getToken(currentEmail);
             }
@@ -206,7 +214,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             @Override
             protected void onPostExecute(String token) {
                 Log.i(TAG, "Access token retrieved:" + token);
-                getRowsByValue(Network.MODTABLE, token, "Email", email, getBaseContext());
+                getRowsByValue(Network.MODTABLE, token, "email", email, getBaseContext());
             }
 
         };
@@ -233,21 +241,29 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         alertDialog.setMessage("Your access to moderator's zone has been revoked! Please contact developers.");
                         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO: Write your code here to execute after dialog closed
                                 hideProgressDialog();
+                                deleteInfo();
+                                startActivity(new Intent(Login.this, Home.class));
 
                             }
                         });
+
+                        alertDialog.setCanceledOnTouchOutside(false);
 
                         // Showing Alert Message
                         alertDialog.show();
 
                     } else {
-                            Toast.makeText(context, "Successfully Loaded preferences", Toast.LENGTH_LONG);
-                            startActivity(new Intent(Login.this, LoadData.class));
-                            hideProgressDialog();
-
-
+                        pref.edit().putString(EMAIL,response.body().getRows().get(0).get(0)).apply();
+                        pref.edit().putString(NAME,response.body().getRows().get(0).get(1)).apply();
+                        pref.edit().putString(KEY,response.body().getRows().get(0).get(2)).apply();
+                        pref.edit().putString(ACCESS_LEVEL,response.body().getRows().get(0).get(3)).apply();
+                        pref.edit().putString(EXTRA_CODE,response.body().getRows().get(0).get(4)).apply();
+                        pref.edit().putString(LOGTABLE,response.body().getRows().get(0).get(5)).apply();
+                        pref.edit().putBoolean(ModeratorZone.IS_MODERATOR,true).apply();
+                        Toast.makeText(context, "Successfully Loaded preferences", Toast.LENGTH_LONG);
+                        hideProgressDialog();
+                        startActivity(new Intent(Login.this, LoadData.class));
                     }
 
 
@@ -266,11 +282,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                            //TODO: Write your code here to execute after dialog closed
-
+                            startActivity(new Intent(Login.this, Home.class));
 
                             }
                         });
-
+                        alertDialog.setCanceledOnTouchOutside(false);
                         // Showing Alert Message
                         alertDialog.show();
                     }
@@ -284,4 +300,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         });
     }
 
+    private void deleteInfo(){
+        pref.edit().remove(KEY).apply();
+        pref.edit().remove(LOGTABLE).apply();
+        pref.edit().remove(ACCESS_LEVEL).apply();
+        pref.edit().remove(EXTRA_CODE).apply();
+        pref.edit().remove(ModeratorZone.IS_MODERATOR).apply();
+    }
 }

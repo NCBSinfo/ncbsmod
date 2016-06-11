@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.rohitsuratekar.retro.google.gcm.single.reponse.SingleResponse;
 import com.secretbiology.ncbsmod.models.ExternalDataModel;
 
 import java.util.ArrayList;
@@ -13,13 +14,13 @@ import java.util.List;
 public class ExternalData {
 
     //Get Constants
-    static String TABLE_NAME = "ExternalDataTable";
-    static String ID = "ext_id";
-    static String TIMESTAMP = "ext_timestamp";
-    static String NAME = "ext_name";
-    static String EMAIL = "ext_email";
-    static String TOKEN = "ext_token";
-    static String CODE = "ext_code";
+    public static String TABLE_NAME = "ExternalDataTable";
+    public static String ID = "ext_id";
+    public static String TIMESTAMP = "ext_timestamp";
+    public static String NAME = "ext_name";
+    public static String EMAIL = "ext_email";
+    public static String TOKEN = "ext_token";
+    public static String CODE = "ext_code";
 
 
     SQLiteDatabase db;
@@ -102,4 +103,21 @@ public class ExternalData {
         Cursor cursor = db.rawQuery(Query, null);
         if(cursor.getCount() <= 0){ cursor.close(); return false;
         } cursor.close(); return true; }
+
+    public ExternalDataModel getbyField(String fieldName, String value){
+        Cursor cursor = db.query(TABLE_NAME, new String[]{ID,TIMESTAMP, NAME, EMAIL, TOKEN, CODE},
+                fieldName + "=?",
+                new String[]{value}, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        ExternalDataModel entry = null;
+        if (cursor != null) {
+            entry = new ExternalDataModel(cursor.getInt(0), cursor.getString(1),
+                    cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+            cursor.close();
+        }
+        db.close();
+        return entry;
+    }
 }

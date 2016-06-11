@@ -1,8 +1,9 @@
 
-package com.rohitsuratekar.retro.google.gcm.reponse;
+package com.rohitsuratekar.retro.google.gcm;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rohitsuratekar.retro.google.gcm.topic.model.ConferenceData;
 
 public class MakeQuery {
 
@@ -11,7 +12,7 @@ public class MakeQuery {
     private String to;
     @SerializedName("data")
     @Expose
-    private Data data;
+   private ConferenceData data;
 
     public String getTo() {
         return to;
@@ -21,11 +22,11 @@ public class MakeQuery {
         this.to = to;
     }
 
-    public Data getData() {
+  public ConferenceData getData() {
         return data;
     }
 
-    public void setData(Data data) {
+   public void setData(ConferenceData data) {
         this.data = data;
     }
 

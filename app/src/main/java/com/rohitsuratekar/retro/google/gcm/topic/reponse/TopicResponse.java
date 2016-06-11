@@ -1,4 +1,4 @@
-package com.rohitsuratekar.retro.google.gcm.reponse;
+package com.rohitsuratekar.retro.google.gcm.topic.reponse;
 
 
 
@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Topic {
+public class TopicResponse {
 
     @SerializedName("message_id")
     @Expose

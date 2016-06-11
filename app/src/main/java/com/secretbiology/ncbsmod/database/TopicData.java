@@ -14,12 +14,12 @@ import java.util.List;
 public class TopicData {
 
     //Get Constants
-    static String TABLE_NAME = "TopicDataTable";
-    static String ID = "topicdata_id";
-    static String TIMESTAMP = "topicdata_timestamp";
-    static String TOPIC_NAME = "topicdata_topicname";
-    static String MESSAGE = "topicdata_message";
-    static String EXTRA_VARIABLES = "topicdata_variables";
+    public static String TABLE_NAME = "TopicDataTable";
+    public static String ID = "topicdata_id";
+    public static String TIMESTAMP = "topicdata_timestamp";
+    public static String TOPIC_NAME = "topicdata_topicname";
+    public static String MESSAGE = "topicdata_message";
+    public static String EXTRA_VARIABLES = "topicdata_variables";
 
     SQLiteDatabase db;
 

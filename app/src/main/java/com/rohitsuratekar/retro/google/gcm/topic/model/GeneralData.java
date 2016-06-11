@@ -1,9 +1,9 @@
-package com.rohitsuratekar.retro.google.gcm.reponse;
+package com.rohitsuratekar.retro.google.gcm.topic.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Data {
+public class GeneralData {
 
     @SerializedName("message")
     @Expose
