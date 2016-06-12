@@ -47,8 +47,10 @@
         android:layout_height="match_parent"
         android:id="@+id/topicwindow_recyclerView"
         android:layout_below="@+id/linearLayout"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_margin="10sp" />
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:layout_marginTop="10sp"
+        android:layout_above="@+id/imp_checkbox" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -74,5 +76,14 @@
             android:text="Send"
             android:id="@+id/topic_sendButton" />
     </LinearLayout>
+
+    <CheckBox
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Important Message"
+        android:id="@+id/imp_checkbox"
+        android:checked="false"
+        android:layout_above="@+id/linearLayout2"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

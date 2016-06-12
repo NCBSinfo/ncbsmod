@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,11 +36,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class TopicWindow extends AppCompatActivity {
 
     public static final String INDENT_TOPICNAME = "topicName";
     public static final String INDENT_EXTERNALCODE = "ExternalCode";
     public static final String INFO = "INFO";
+    public static final String IMP = "IMP";
+
     public static final String TOPIC_TITLE = "topicTitle";
 
     String topicName, externalCode;
@@ -50,6 +54,7 @@ public class TopicWindow extends AppCompatActivity {
     List<TopicDataModel> refinedList;
     TopicWindowAdapter adaper;
     private ProgressDialog mProgressDialog;
+    CheckBox impBox;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +65,7 @@ public class TopicWindow extends AppCompatActivity {
         topicName = intent.getStringExtra(INDENT_TOPICNAME);
         externalCode = intent.getStringExtra(INDENT_EXTERNALCODE);
 
-
+        impBox = (CheckBox)findViewById(R.id.imp_checkbox);
         message = (EditText)findViewById(R.id.topicwindow_message);
         sendBtn = (Button)findViewById(R.id.topic_sendButton);
         topicLevel = (TextView)findViewById(R.id.topicwindow_topic);
@@ -101,7 +106,12 @@ public class TopicWindow extends AppCompatActivity {
                     ConferenceData data = new ConferenceData();
                     data.setMessage(message.getText().toString());
                     data.setExternalCode(externalCode);
-                    data.setGcm_extra(INFO);
+                    if(impBox.isChecked()){
+                        data.setGcm_extra(IMP);
+                    }
+                    else {
+                        data.setGcm_extra(INFO);
+                    }
                     data.setTitle(pref.getString(TOPIC_TITLE,"Announcement"));
 
                     MakeQuery query = new MakeQuery();
@@ -115,7 +125,7 @@ public class TopicWindow extends AppCompatActivity {
 
     }
 
-    public void sendTopicMessage (String token, MakeQuery data){
+    public void sendTopicMessage (String token, final MakeQuery data){
         Commands ThisService = Service.createService(Commands.class, token);
         Call<TopicResponse> call = ThisService.sendTopicMessage(data);
         call.enqueue(new Callback<TopicResponse>() {
@@ -123,10 +133,11 @@ public class TopicWindow extends AppCompatActivity {
             public void onResponse(Call<TopicResponse> call, Response<TopicResponse> response) {
                 if (response.isSuccess()) {
                     TopicDataModel a = new TopicDataModel(0, new GeneralFunctions().timeStamp(),
-                            topicName, message.getText().toString(),"none");
+                            topicName, message.getText().toString(),data.getData().getGcm_extra());
                     new TopicData(getBaseContext()).add(a);
                     refinedList.add(a);
                     adaper.notifyDataSetChanged();
+                    impBox.setChecked(false);
                     message.setText("");
                 } else {
                     Toast.makeText(getBaseContext(),"Error",Toast.LENGTH_LONG).show();

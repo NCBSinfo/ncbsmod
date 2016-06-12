@@ -43,4 +43,12 @@ public class Database extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(Query, null);
         if(cursor.getCount() <= 0){ cursor.close(); return false;
         } cursor.close(); return true; }
+
+    public void recreate(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        new Tables().dropTables(db);
+        new Tables().makeExternalDataTable(db);
+        new Tables().makeUserDataTable(db);
+        new Tables().makeTopicDataTable(db);
+    }
 }

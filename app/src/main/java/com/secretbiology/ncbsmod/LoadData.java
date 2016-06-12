@@ -31,6 +31,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.secretbiology.ncbsmod.activity.Login;
 import com.secretbiology.ncbsmod.activity.UserList;
 import com.secretbiology.ncbsmod.constants.Network;
 import com.secretbiology.ncbsmod.constants.Preferences;
@@ -304,7 +305,7 @@ public class LoadData extends AppCompatActivity implements EasyPermissions.Permi
             }
 
             private List<String> getDataFromApi() throws IOException {
-                String spreadsheetId = Network.SHEET_ID;
+                String spreadsheetId = PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getString(Login.SHEET_ID,"Error");
                 String range = "A2:E";
                 List<String> results = new ArrayList<String>();
                 ValueRange response = this.mService.spreadsheets().values()
@@ -325,7 +326,6 @@ public class LoadData extends AppCompatActivity implements EasyPermissions.Permi
                         if(!new ExternalData(getBaseContext()).isAlreadyThere(entry.getTimestamp())){
 
                             if(new Database(getBaseContext()).isAlreadyThere(ExternalData.TABLE_NAME,ExternalData.EMAIL,entry.getEmail())) {
-
                                 new ExternalData(getBaseContext()).delete(new ExternalData(getBaseContext()).getbyField(ExternalData.EMAIL,entry.getEmail()));
                                 new ExternalData(getBaseContext()).add(entry);
                             }

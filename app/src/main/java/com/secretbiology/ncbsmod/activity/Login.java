@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,6 +18,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -30,6 +34,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.rohitsuratekar.retro.google.fusiontable.Commands;
 import com.rohitsuratekar.retro.google.fusiontable.Service;
 import com.rohitsuratekar.retro.google.fusiontable.reponse.SpecificRowValue;
@@ -38,8 +44,10 @@ import com.secretbiology.ncbsmod.LoadData;
 import com.secretbiology.ncbsmod.R;
 import com.secretbiology.ncbsmod.constants.Network;
 import com.secretbiology.ncbsmod.helpers.GeneralFunctions;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,6 +65,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     public static final String LOGTABLE = "logTable";
     public static final String EXTRA_CODE = "currentExtraCodes";
     public static final String ACCESS_LEVEL = "currentAccessLevel";
+    public static final String SHEET_ID = "currentSheetID";
+    public static final String IMAGE_URL = "currentImageUrl";
+
 
     //Private constants
     private static String TAG = Login.class.getSimpleName();
@@ -82,6 +93,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(Plus.API)
                 .build();
 
 
@@ -135,6 +147,13 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            Person person  = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+            if(person.getImage().hasUrl()){
+                pref.edit().putString(IMAGE_URL, person.getImage().getUrl()).apply();
+            }
+            else
+            {Log.i("No Pic", "No url found");}
+
             handleSignInResult(result);
         } else if (requestCode == AUTH_CODE_REQUEST_CODE) {
             getToken(currentEmail);
@@ -256,10 +275,11 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     } else {
                         pref.edit().putString(EMAIL,response.body().getRows().get(0).get(0)).apply();
                         pref.edit().putString(NAME,response.body().getRows().get(0).get(1)).apply();
-                        pref.edit().putString(KEY,response.body().getRows().get(0).get(2)).apply();
+                        pref.edit().putString(KEY,response.body().getRows().get(0).get(2).replaceAll("\\s+","")).apply();
                         pref.edit().putString(ACCESS_LEVEL,response.body().getRows().get(0).get(3)).apply();
                         pref.edit().putString(EXTRA_CODE,response.body().getRows().get(0).get(4)).apply();
                         pref.edit().putString(LOGTABLE,response.body().getRows().get(0).get(5)).apply();
+                        pref.edit().putString(SHEET_ID,response.body().getRows().get(0).get(6).replaceAll("\\s+","")).apply();
                         pref.edit().putBoolean(ModeratorZone.IS_MODERATOR,true).apply();
                         Toast.makeText(context, "Successfully Loaded preferences", Toast.LENGTH_LONG);
                         hideProgressDialog();
@@ -307,4 +327,5 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         pref.edit().remove(EXTRA_CODE).apply();
         pref.edit().remove(ModeratorZone.IS_MODERATOR).apply();
     }
-}
+
+ }

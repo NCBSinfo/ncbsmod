@@ -10,20 +10,43 @@
     tools:context="com.secretbiology.ncbsmod.Home">
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:id="@+id/debug_button"
-        android:layout_alignParentTop="true"
+        android:id="@+id/LoginButton"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp" />
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LoadData"
-        android:id="@+id/loadData"
+    <ImageView
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:id="@+id/login_status"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/icon_mod"
+        android:tint="@color/home_red" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Login with google account\nassociated with admin console"
+        android:id="@+id/home_footnote"
+        android:layout_above="@+id/LoginButton"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center"
+        android:layout_marginBottom="10sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Administrator&apos;s console for\nNCBSinfo app"
+        android:id="@+id/welcome_message"
+        android:textAlignment="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

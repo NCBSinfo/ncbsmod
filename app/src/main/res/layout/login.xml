@@ -26,9 +26,8 @@
         android:text="Try Again"
         android:id="@+id/SignIn_Button"
         android:onClick="signIn"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="33dp"
         android:background="@color/colorPrimary"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
