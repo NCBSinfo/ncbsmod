@@ -1,4 +1,4 @@
-package com.rohitsuratekar.retro.google.gcm;
+package com.secretbiology.retro.google.form;
 
 import java.io.IOException;
 
@@ -10,10 +10,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
 public class Service {
 
-    public static final String API_BASE_URL = "https://gcm-http.googleapis.com";
+    public static final String API_BASE_URL = "https://docs.google.com";
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -22,9 +21,7 @@ public class Service {
                     .baseUrl(API_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
-    public static <S> S createService(Class<S> serviceClass, String token) {
-
-        final String key = "key="+token;
+    public static <S> S createService(Class<S> serviceClass) {
 
         httpClient.addInterceptor(new Interceptor() {
             @Override
@@ -33,7 +30,6 @@ public class Service {
 
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("Content-Type", "application/json")
-                        .header("Authorization",key)
                         .method(original.method(), original.body());
 
                 Request request = requestBuilder.build();
@@ -47,4 +43,5 @@ public class Service {
         Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }
+
 }

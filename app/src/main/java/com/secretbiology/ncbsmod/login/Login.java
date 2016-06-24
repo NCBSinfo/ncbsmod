@@ -1,15 +1,15 @@
-package com.secretbiology.ncbsmod;
+package com.secretbiology.ncbsmod.login;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Home extends AppCompatActivity {
+import com.secretbiology.ncbsmod.R;
+
+public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home);
-
-        debug.UseTypes.I
+        setContentView(R.layout.login);
     }
 }

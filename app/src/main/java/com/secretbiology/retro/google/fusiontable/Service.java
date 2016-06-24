@@ -1,4 +1,4 @@
-package com.rohitsuratekar.retro.google.fusiontable;
+package com.secretbiology.retro.google.fusiontable;
 
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ public class Service {
 
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("Content-Type", "application/json")
-                        .header("Authorization",BasicToken)
+                        .header("Authorization", BasicToken)
                         .method(original.method(), original.body());
 
                 Request request = requestBuilder.build();

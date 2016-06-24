@@ -1,8 +1,5 @@
-package com.rohitsuratekar.retro;
+package com.secretbiology.retro;
 
-/**
- * Created by Dexter on 3/7/2016.
- */
 public abstract class BaseResponse {
 
     private String error = null;

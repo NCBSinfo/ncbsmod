@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.secretbiology.ncbsmod">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,12 +15,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Login" />
-        <activity android:name=".LoadData" />
-        <activity android:name=".activity.UserList" />
-        <activity android:name=".activity.UserWindow" />
-        <activity android:name=".activity.ModeratorZone" />
-        <activity android:name=".activity.TopicWindow"></activity>
+        <activity android:name=".login.Login"></activity>
     </application>
 
 </manifest>

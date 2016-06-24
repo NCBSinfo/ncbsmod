@@ -1,4 +1,4 @@
-package com.rohitsuratekar.retro.google.fusiontable.reponse;
+package com.secretbiology.retro.google.fusiontable.reponse;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpecificRowValue {
+public class RowModel {
 
     @SerializedName("kind")
     @Expose
@@ -34,11 +34,11 @@ public class SpecificRowValue {
         this.columns = columns;
     }
 
-     public List<List<String>> getRows() {
+    public List<List<String>> getRows() {
         return rows;
     }
 
-      public void setRows(List<List<String>> rows) {
+    public void setRows(List<List<String>> rows) {
         this.rows = rows;
     }
 
