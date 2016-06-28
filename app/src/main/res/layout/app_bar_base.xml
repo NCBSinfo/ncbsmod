@@ -19,10 +19,12 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+
     </android.support.design.widget.AppBarLayout>
-   <ViewStub
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:id="@+id/baseView"/>
+
+     <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/baseView"/>
 
 </android.support.design.widget.CoordinatorLayout>

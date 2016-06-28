@@ -7,7 +7,7 @@ public interface User {
     interface profile{
         String NAME = "userName"; //String
         String EMAIL = "userEmail"; //String
-        String TOICS = "allowedTopics"; //String
+        String TOPICS = "allowedTopics"; //String
         String KEY = "userKey"; //String
         String TOKEN = "userToken"; //String
     }

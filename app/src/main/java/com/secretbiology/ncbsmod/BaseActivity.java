@@ -1,17 +1,18 @@
 package com.secretbiology.ncbsmod;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public abstract class BaseActivity extends Activity
+public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     protected static int menuItem = 0;
@@ -22,9 +23,9 @@ public abstract class BaseActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.base);
-        
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -40,9 +41,6 @@ public abstract class BaseActivity extends Activity
 
     }
 
-    protected abstract void setActionBar(Toolbar toolbar);
-
-
 
     @Override
     public void onBackPressed() {
@@ -57,6 +55,7 @@ public abstract class BaseActivity extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        Log.i("It is called", "here...");
         getMenuInflater().inflate(R.menu.base, menu);
         return true;
     }
@@ -85,10 +84,12 @@ public abstract class BaseActivity extends Activity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
+            Log.i("Clicked", "Gallay !");
 
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
+            Log.i("Clicked", "Manage !");
 
         } else if (id == R.id.nav_share) {
 

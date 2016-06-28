@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.secretbiology.ncbsmod.BaseActivity;
+import com.secretbiology.ncbsmod.Dashboard;
 import com.secretbiology.ncbsmod.R;
 import com.secretbiology.ncbsmod.database.Database;
 import com.secretbiology.ncbsmod.helpers.Utilities;
@@ -132,15 +133,24 @@ public class Login extends BaseActivity implements User, Network {
                                             Map<String, Object> data = (Map<String, Object>) dataSnapshot.getValue();
                                             if(data!=null) {
                                                 if (data.get(nodes.topics) != null) {
-                                                    pref.edit().putString(profile.TOICS,data.get(nodes.topics).toString()).apply();
+                                                    pref.edit().putString(profile.TOPICS,data.get(nodes.topics).toString()).apply();
+
+                                                    if (data.get(nodes.api_key) != null) {
+                                                        pref.edit().putString(profile.KEY,data.get(nodes.api_key).toString()).apply();
+                                                    }
+                                                    if (data.get(nodes.name) != null) {
+                                                        pref.edit().putString(profile.NAME,data.get(nodes.name).toString()).apply();
+                                                    }
+                                                    mDatabase.child(nodes.users + "/" + mAuth.getCurrentUser().getUid() + "/" + nodes.token).setValue(FirebaseInstanceId.getInstance().getToken());
+                                                    pref.edit().putString(profile.TOKEN, FirebaseInstanceId.getInstance().getToken()).apply();
+                                                    pref.edit().putBoolean(AUTHORIZED,true).apply();
+                                                    hideProgressDialog();
+                                                    Intent intent = new Intent(Login.this, Dashboard.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                    startActivity(intent);
+
                                                 }
-                                                if (data.get(nodes.api_key) != null) {
-                                                    pref.edit().putString(profile.KEY,data.get(nodes.api_key).toString()).apply();
-                                                }
-                                                if (data.get(nodes.name) != null) {
-                                                    pref.edit().putString(profile.NAME,data.get(nodes.name).toString()).apply();
-                                                }
-                                                if(data.get(nodes.topics)==null){
+                                                else{
 
                                                     new AlertDialog.Builder(Login.this)
                                                             .setTitle("Oops!")
@@ -153,12 +163,6 @@ public class Login extends BaseActivity implements User, Network {
                                                             .show();
                                                     hideProgressDialog();
                                                 }
-
-                                                mDatabase.child(nodes.users + "/" + mAuth.getCurrentUser().getUid() + "/" + nodes.token).setValue(FirebaseInstanceId.getInstance().getToken());
-                                                pref.edit().putString(profile.TOKEN, FirebaseInstanceId.getInstance().getToken()).apply();
-                                                pref.edit().putBoolean(AUTHORIZED,true).apply();
-                                                //TODO: next window
-                                                hideProgressDialog();
                                             }
                                             else {
 
@@ -224,10 +228,6 @@ public class Login extends BaseActivity implements User, Network {
     }
 
     @Override
-    protected void setActionBar(Toolbar toolbar) {
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         if (mAuthListener != null) {
@@ -240,6 +240,7 @@ public class Login extends BaseActivity implements User, Network {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+            super.hideProgressDialog();
         }
     }
 

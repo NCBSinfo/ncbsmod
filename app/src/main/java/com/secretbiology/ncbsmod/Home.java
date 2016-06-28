@@ -1,8 +1,9 @@
 package com.secretbiology.ncbsmod;
 
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,14 +12,24 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.secretbiology.ncbsmod.helpers.Utilities;
-import com.secretbiology.ncbsmod.login.Login;
+import com.secretbiology.ncbsmod.interfaces.Network;
+import com.secretbiology.ncbsmod.interfaces.User;
+import com.secretbiology.retro.google.fcm.Commands;
+import com.secretbiology.retro.google.fcm.MakeQuery;
+import com.secretbiology.retro.google.fcm.Service;
+import com.secretbiology.retro.google.fcm.topic.model.TopicData;
+import com.secretbiology.retro.google.fcm.topic.reponse.TopicResponse;
 
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.util.List;
 
-public class Home extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class Home extends AppCompatActivity implements User, Network{
     List<Proxy> proxyList;
 
     @Override
@@ -29,8 +40,16 @@ public class Home extends AppCompatActivity {
         ProxySelector defaultProxySelector = ProxySelector.getDefault();
         proxyList = defaultProxySelector.select(URI.create("http://www.google.com"));
 
+        TopicData data = new TopicData();
+        data.setTitle("Testing notification");
+        data.setMessage("debug");
 
-        startActivity(new Intent(Home.this, Login.class));
+        final MakeQuery query = new MakeQuery();
+        query.setData(data);
+        query.setTo("/topics/"+"test");
+
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
 
         Button btn = (Button)findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +70,8 @@ public class Home extends AppCompatActivity {
                                     })
                                     .show();
                         } else {
-                            startActivity(new Intent(Home.this, Login.class));
+                            //startActivity(new Intent(Home.this, Login.class));
+                            sendTopicMessage(pref.getString(profile.KEY,"This one"),query);
                         }
                     }
                 }
@@ -62,6 +82,32 @@ public class Home extends AppCompatActivity {
             }
         });
     }
+
+    public void sendTopicMessage (String token, final MakeQuery data){
+        Commands ThisService = Service.createService(Commands.class, token);
+        Call<TopicResponse> call = ThisService.sendTopicMessage(data);
+        call.enqueue(new Callback<TopicResponse>() {
+            @Override
+            public void onResponse(Call<TopicResponse> call, Response<TopicResponse> response) {
+                if (response.isSuccess()) {
+                    Log.i("Success", response.message());
+
+                } else {
+                    Log.i("Error ", response.message());
+                    Toast.makeText(getBaseContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<TopicResponse> call, Throwable t) {
+
+                Log.i("Failed ", t.getLocalizedMessage());
+
+            }
+        });
+    }
+
 
 
 }
