@@ -20,10 +20,9 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/base_fragmentHolder"/>
-    <include layout="@layout/content_base" />
+   <ViewStub
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:id="@+id/baseView"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.secretbiology.ncbsmod">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,17 +19,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.Login" />
-        <activity
-            android:name=".BaseActivity"
-            android:label="@string/title_activity_base"
-            android:parentActivityName=".Home"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.secretbiology.ncbsmod.Home" />
-        </activity>
 
-        <activity android:name=".login.Register" />
+        <service android:name=".background.FireBaseID">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".background.FireBaseMessage">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
     </application>
 

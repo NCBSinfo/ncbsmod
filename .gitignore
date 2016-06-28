@@ -8,3 +8,4 @@
 /captures
 *.keystore
 app/google-services.json
+app/src/main/java/com/secretbiology/ncbsmod/interfaces/Network.java

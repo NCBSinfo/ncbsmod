@@ -6,4 +6,18 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+
+
+    <string name="warning_user_exists_title">User exists</string>
+    <string name="warning_user_exists">Email address provided by you is already present in our database. Try signing in ?</string>
+    <string name="warning_password_reset">Link to reset password will be sent to your email address \'%1$s\' . Please check your inbox for further details . </string>
+    <string name="warning_firebase_too_many_attemps">Too many login attempts are detected from this device. Please try after some time.</string>
+    <string name="warning_firebase_user_does_not_exist">No such user found in our database. Try signing up for new account ?</string>
+    <string name="warning_registration_empty_password">Password can not be empty</string>
+    <string name="warning_registration_bad_password">Password must be at least 6 character long</string>
+    <string name="warning_registration_wrong_password">Wrong Password</string>
+    <string name="warning_registration_empty_username">Name can not be empty</string>
+    <string name="warning_registration_invalid_email">Invalid email</string>
+
 </resources>
