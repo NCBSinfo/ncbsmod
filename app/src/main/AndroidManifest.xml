@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.Login" />
-        <activity android:name=".Dashboard" />
+        <activity android:name=".dashboard.Dashboard" />
 
         <service android:name=".background.FireBaseID">
             <intent-filter>

@@ -1,6 +1,7 @@
 package com.secretbiology.ncbsmod;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,9 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.secretbiology.ncbsmod.dashboard.Dashboard;
 import com.secretbiology.ncbsmod.helpers.Utilities;
 import com.secretbiology.ncbsmod.interfaces.Network;
 import com.secretbiology.ncbsmod.interfaces.User;
+import com.secretbiology.ncbsmod.login.Login;
 import com.secretbiology.retro.google.fcm.Commands;
 import com.secretbiology.retro.google.fcm.MakeQuery;
 import com.secretbiology.retro.google.fcm.Service;
@@ -39,6 +42,8 @@ public class Home extends AppCompatActivity implements User, Network{
 
         ProxySelector defaultProxySelector = ProxySelector.getDefault();
         proxyList = defaultProxySelector.select(URI.create("http://www.google.com"));
+
+        startActivity(new Intent(Home.this, Dashboard.class));
 
         TopicData data = new TopicData();
         data.setTitle("Testing notification");
@@ -70,8 +75,7 @@ public class Home extends AppCompatActivity implements User, Network{
                                     })
                                     .show();
                         } else {
-                            //startActivity(new Intent(Home.this, Login.class));
-                            sendTopicMessage(pref.getString(profile.KEY,"This one"),query);
+                            startActivity(new Intent(Home.this, Login.class));
                         }
                     }
                 }
