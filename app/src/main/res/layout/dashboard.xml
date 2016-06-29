@@ -7,6 +7,13 @@
     android:padding="16sp"
     android:gravity="bottom"
     android:weightSum="100">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="80"
+        android:weightSum="100"
+        android:gravity="center">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -60,7 +67,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="You have access to following group(s)"
+        android:text="@string/dashboard_message"
         android:id="@+id/textView2"
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"
@@ -73,6 +80,7 @@
         android:layout_marginTop="20sp"
         android:layout_marginBottom="20sp"
         android:layout_weight="60" />
+    </LinearLayout>
 
     <Button
         android:layout_width="fill_parent"

@@ -10,14 +10,14 @@ import com.secretbiology.ncbsmod.database.models.NotificationModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationData extends Database {
+public class NotificationData {
 
     public static final String TABLE_NOTIFICATIONS = "table_notifications";
     public static final String KEY_ID = "id";
     public static final String TIMESTAMP = "timestamp";
     public static final String TITLE = "title";
     public static final String MESSAGE = "message";
-    public static final String FROM = "from";
+    public static final String FROM = "fromTopic";
     public static final String RCODE = "rcode";
     public static final String RCODE_VALUE = "rcodeValue";
     public static final String EXTRA_PARAMETERS = "extraParameters";
@@ -25,8 +25,8 @@ public class NotificationData extends Database {
     SQLiteDatabase db;
 
     public NotificationData(Context context) {
-        super(context);
-        this.db = getWritableDatabase();
+        Database data = new Database(context);
+        this.db = data.getWritableDatabase();
     }
 
     public void add(NotificationModel notification) {

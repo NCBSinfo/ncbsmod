@@ -30,6 +30,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.secretbiology.ncbsmod.BaseActivity;
 import com.secretbiology.ncbsmod.dashboard.Dashboard;
 import com.secretbiology.ncbsmod.R;
+import com.secretbiology.ncbsmod.database.Database;
 import com.secretbiology.ncbsmod.helpers.Utilities;
 import com.secretbiology.ncbsmod.interfaces.Network;
 import com.secretbiology.ncbsmod.interfaces.User;
@@ -37,11 +38,6 @@ import com.secretbiology.ncbsmod.interfaces.User;
 import java.util.Map;
 
 public class Login extends BaseActivity implements User, Network {
-
-    //Activity specific settings
-    static {
-        menuItem = R.id.nav_send;
-    }
 
     private final String TAG = getClass().getSimpleName();
     SharedPreferences pref;
@@ -53,6 +49,7 @@ public class Login extends BaseActivity implements User, Network {
     Button signInButton, forgotpassButton;
     TextInputEditText username, password;
     TextInputLayout user_layout, password_layout;
+    ProgressDialog mProgressDialog;
 
 
     @Override
@@ -122,7 +119,7 @@ public class Login extends BaseActivity implements User, Network {
 
                                 } else {
                                     pref.edit().clear().apply();
-                                    //TODO: delete database
+                                    new Database(getBaseContext()).restartDatabase();
                                     pref.edit().putString(profile.EMAIL, username.getText().toString()).apply();
                                     mDatabase.child(nodes.users).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -238,7 +235,7 @@ public class Login extends BaseActivity implements User, Network {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
-            super.hideProgressDialog();
+            hideProgressDialog();
         }
     }
 
@@ -273,6 +270,22 @@ public class Login extends BaseActivity implements User, Network {
             user_layout.setErrorEnabled(false);
         }
         return true;
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Loading");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 
 }

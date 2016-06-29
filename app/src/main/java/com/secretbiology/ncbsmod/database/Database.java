@@ -25,12 +25,17 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        new Tables(mContext).makeContactTable();
+        new Tables(sqLiteDatabase).makeContactTable();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public void restartDatabase() {
+        new Tables(getWritableDatabase()).dropAllTables();
+        onCreate(getWritableDatabase());
     }
 
 }

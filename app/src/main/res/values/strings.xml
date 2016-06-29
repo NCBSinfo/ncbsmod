@@ -7,6 +7,8 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="dashboard_message">You have access to following group(s)\nSelect to send notifications.</string>
+
 
 
     <string name="warning_user_exists_title">User exists</string>
