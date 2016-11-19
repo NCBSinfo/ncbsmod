@@ -124,8 +124,7 @@ public class TopicWindow extends BaseActivity implements User {
                             data.setTitle(title);
                             MakeQuery query = new MakeQuery();
                             query.setData(data);
-                            //TODO : change topic
-                            query.setTo("/topics/" + "test");
+                            query.setTo("/topics/" + curentTopic);
                             showProgressDialog();
                             mProgressDialog.setMessage("Sending...");
                             sendTopicMessage(pref.getString(profile.KEY, "error"), query);

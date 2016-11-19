@@ -40,6 +40,7 @@ public class Home extends AppCompatActivity implements User, Network {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
 
+
         ProxySelector defaultProxySelector = ProxySelector.getDefault();
         proxyList = defaultProxySelector.select(URI.create("http://www.google.com"));
         icon = (ImageView) findViewById(R.id.login_status);

@@ -47,9 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         new CustomNavigation(navigationView,getBaseContext()).setUp();
 
-
     }
-
 
     @Override
     public void onBackPressed() {
